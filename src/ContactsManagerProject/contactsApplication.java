@@ -137,11 +137,19 @@ public class contactsApplication {
 //    }
 
     public static void main(String[] args) {
+
 //        newFile();
         Contact person1 = new Contact("Briana", "775-313-5602");
         Contact person2 = new Contact("Matthew", "876-978-7854");
+        Contact person3 = new Contact("Jack", "576-578-7890");
+        Contact person4 = new Contact("Jane", "978-543-8976");
+        Contact person5 = new Contact("Sam", "347-843-9821");
         writeFile(person1.getName() + " " + person1.getNumber());
         writeFile(person2.getName() + " " + person2.getNumber());
+        writeFile(person3.getName() + " " + person3.getNumber());
+        writeFile(person4.getName() + " " + person4.getNumber());
+        writeFile(person5.getName() + " " + person5.getNumber());
+
         doStuff();
     }
 }
