@@ -1,24 +1,22 @@
 package ContactsManagerProject;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import util.Input;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.io.ObjectOutputStream;
+import java.io.FileOutputStream;
 
 public class contactsApplication {
 
     static private List<Object> contactsList;
     static Input userInput = new Input();
-
 
     public static void newFile() {
         String directory = "data";
@@ -43,9 +41,9 @@ public class contactsApplication {
     public static void writeFile(Object person) {
         contactsList = new ArrayList<>();
         contactsList.add(person);
-        for (Object contact : contactsList){
-            System.out.println(contact);
-        }
+//        for (Object contact : contactsList){
+//            System.out.println(contact);
+//        }
         try {
             Path contactsPATH = Paths.get("data", "contacts.txt");
             Files.write(contactsPATH, Arrays.asList(convertString(contactsList)), StandardOpenOption.APPEND);
@@ -54,7 +52,7 @@ public class contactsApplication {
         }
     }
 
-    public static void readFile(){
+    public static void readFile() {
         try {
             Path contactsFile = Paths.get("data", "contacts.txt");
             List<String> contactLines = Files.readAllLines(contactsFile);
@@ -64,6 +62,29 @@ public class contactsApplication {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    public static void addContact() {
+
+        List<String> contact = new ArrayList<>();
+
+        System.out.print("Input your new contact's information: ");
+        Scanner scanner = new Scanner(System.in);
+        String option = scanner.nextLine();
+        contact.add(option);
+        try {
+            Path contacts = Paths.get("data", "contacts.txt");
+            Files.write(contacts, contact, StandardOpenOption.APPEND);
+
+//            Path contactsPATH = Paths.get("data", "contacts.txt");
+//            Files.write(contactsPATH, Arrays.asList(convertString(contactsList)), StandardOpenOption.APPEND);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    public static void removeContact() {
+
     }
 
     public static String[] convertString(List<Object> item){
@@ -86,10 +107,10 @@ public class contactsApplication {
 //    }
 
     public static void doStuff() {
-        System.out.println("Welcome!\n");
+
+        System.out.println("\nWelcome!\n");
         System.out.println("Here are your menu options for your contacts: \n");
-        System.out.println("1. View contacts." + "\n" + "2. Add a new contact." + "\n" + "3. Search a contact by name." + "\n" + "4. Delete an existing contact." + "\n" + "5. Exit." + "\n" + "Enter an option (1, 2, 3, 4 or 5):");
-//        System.out.println(Contacts.keySet() + "\n");
+        System.out.println("1. View contacts." + "\n" + "2. Add a new contact." + "\n" + "3. Search a contact by name." + "\n" + "4. Delete an existing contact." + "\n" + "5. Exit.\n" + "\n" + "Enter an option (1, 2, 3, 4 or 5):");
         Scanner scanner = new Scanner(System.in);
         Integer option = Integer.valueOf(scanner.next());
         if (option < 1 || option > 5) {
@@ -110,6 +131,17 @@ public class contactsApplication {
             } else {
                 System.out.println("Goodbye, and have a wonderful day!");
             }
+        } else if (option == 2) {
+            addContact();
+            System.out.println("\nWould you like to select another option?\n");
+            boolean confirm = userInput.yesNo();
+            if (confirm) {
+                doStuff();
+            } else {
+                System.out.println("Goodbye, and have a wonderful day!");
+            }
+        } else if (option == 5) {
+            System.out.println("Goodbye, and have a wonderful day!");
         }
     }
 
@@ -137,19 +169,6 @@ public class contactsApplication {
 //    }
 
     public static void main(String[] args) {
-
-//        newFile();
-        Contact person1 = new Contact("Briana", "775-313-5602");
-        Contact person2 = new Contact("Matthew", "876-978-7854");
-        Contact person3 = new Contact("Jack", "576-578-7890");
-        Contact person4 = new Contact("Jane", "978-543-8976");
-        Contact person5 = new Contact("Sam", "347-843-9821");
-        writeFile(person1.getName() + " " + person1.getNumber());
-        writeFile(person2.getName() + " " + person2.getNumber());
-        writeFile(person3.getName() + " " + person3.getNumber());
-        writeFile(person4.getName() + " " + person4.getNumber());
-        writeFile(person5.getName() + " " + person5.getNumber());
-
         doStuff();
     }
 }
