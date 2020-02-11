@@ -15,7 +15,7 @@ import java.io.FileOutputStream;
 
 public class contactsApplication {
 
-    static private List<Object> contactsList;
+    static private List<Contact> contactsList = new ArrayList<>();
     static Input userInput = new Input();
 
     public static void newFile() {
@@ -38,8 +38,7 @@ public class contactsApplication {
         }
     }
 
-    public static void writeFile(Object person) {
-        contactsList = new ArrayList<>();
+    public static void writeFile(Contact person) {
         contactsList.add(person);
 //        for (Object contact : contactsList){
 //            System.out.println(contact);
@@ -58,6 +57,7 @@ public class contactsApplication {
             List<String> contactLines = Files.readAllLines(contactsFile);
             for (String line : contactLines) {
                 System.out.println(line);
+                contactsList.add(new Contact())
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -65,46 +65,70 @@ public class contactsApplication {
     }
 
     public static void addContact() {
-
-        List<String> contact = new ArrayList<>();
-
         System.out.print("Input your new contact's information: ");
         Scanner scanner = new Scanner(System.in);
         String option = scanner.nextLine();
-        contact.add(option);
         try {
             Path contacts = Paths.get("data", "contacts.txt");
-            Files.write(contacts, contact, StandardOpenOption.APPEND);
-
-//            Path contactsPATH = Paths.get("data", "contacts.txt");
-//            Files.write(contactsPATH, Arrays.asList(convertString(contactsList)), StandardOpenOption.APPEND);
+            Files.writeString(contacts, option, StandardOpenOption.APPEND);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
     public static void removeContact() {
-
+        System.out.println("\nHere is the current contacts list for your reference: \n");
+        readFile();
+        System.out.println("\nEnter the name of the contact you want to remove: \n");
+        Scanner scanner = new Scanner(System.in);
+        String option = scanner.nextLine();
+        contactsList.remove(option);
     }
 
-    public static String[] convertString(List<Object> item){
+    public static void search() {
+        List<String> filteredNames = new ArrayList<>();
+        Scanner scanner = new Scanner(System.in);
+        String option;
+        System.out.println("\nEnter the name of the contact you want to search: \n");
+        option = scanner.nextLine();
+        for (int i = 0; i < contactsList.size(); i++) {
+            if (contactsList.get(i).getName().contains(option)) {
+                filteredNames.add(contactsList.get(i).getName());
+            }
+        }
+        System.out.println(filteredNames);
+    }
+
+//    public Customer findUsingEnhancedForLoop(
+//            String name, List<Customer> customers) {
+//
+//        for (Customer customer : customers) {
+//            if (customer.getName().equals(name)) {
+//                return customer;
+//            }
+//        }
+//        return null;
+//    }
+
+//    public Object findUsingEnhancedForLoop (String name, List<Object> contactsList) {
+//
+//        for (Object person : contactsList) {
+//            if (person.getName().equals(name)) {
+//                return person;
+//            }
+//        }
+//        return null;
+//    }
+
+    public static String[] convertString(List<Contact> item){
         String[] array = new String[item.size()];
         int index = 0;
-        for (Object value : item) {
-            array[index] = (String) value;
+        for (Contact value : item) {
+            array[index] = value.getName();
             index++;
         }
         return array;
     }
-
-//    public static void menu() {
-//        System.out.println("1. View contacts.");
-//        System.out.println("2. Add a new contact.");
-//        System.out.println("3. Search a contact by name.");
-//        System.out.println("4. Delete an existing contact.");
-//        System.out.println("5. Exit.");
-//        System.out.println("Enter an option (1, 2, 3, 4 or 5):");
-//    }
 
     public static void doStuff() {
 
@@ -120,16 +144,17 @@ public class contactsApplication {
             if (confirm) {
                 doStuff();
             } else {
-                System.out.println("Goodbye, and have a wonderful day!");
+                System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 1) {
+            System.out.println("\nYour Contacts:\n");
             readFile();
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
             if (confirm) {
                 doStuff();
             } else {
-                System.out.println("Goodbye, and have a wonderful day!");
+                System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 2) {
             addContact();
@@ -138,10 +163,21 @@ public class contactsApplication {
             if (confirm) {
                 doStuff();
             } else {
-                System.out.println("Goodbye, and have a wonderful day!");
+                System.out.println("\nGoodbye, and have a wonderful day!");
+            }
+        } else if (option == 3) {
+            search();
+        } else if (option == 4) {
+            removeContact();
+            System.out.println("\nWould you like to select another option?\n");
+            boolean confirm = userInput.yesNo();
+            if (confirm) {
+                doStuff();
+            } else {
+                System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 5) {
-            System.out.println("Goodbye, and have a wonderful day!");
+            System.out.println("\nGoodbye, and have a wonderful day!");
         }
     }
 
@@ -169,6 +205,8 @@ public class contactsApplication {
 //    }
 
     public static void main(String[] args) {
+//        System.out.println(contactsList);
         doStuff();
     }
+
 }
