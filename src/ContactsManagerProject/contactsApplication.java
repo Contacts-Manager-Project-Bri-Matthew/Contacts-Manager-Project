@@ -38,16 +38,10 @@ public class contactsApplication {
     }
 
     public static void writeFile(Contact person) {
-//        contactsList = new ArrayList<>();
-//        contactsList.add(person);
-//        for (Object contact : contactsList){
-//            System.out.println(contact);
-//        }
         try {
             Path contactsPATH = Paths.get("data", "contacts.txt");
             List<String> newPerson = Arrays.asList(person.getName() + " " + person.getNumber());
             Files.write(contactsPATH, newPerson, StandardOpenOption.APPEND);
-//
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -55,10 +49,8 @@ public class contactsApplication {
 
     static void readWriteFile(){
         List<String> contactsList = null;
-
         try{
             Path contact = Paths.get("data", "contacts.txt");
-
             contactsList = Files.readAllLines(contact);
             for(String line : contactsList){
                 System.out.println(line);
@@ -76,7 +68,6 @@ public class contactsApplication {
     }
 
     public static void searchString(String userInput){
-
         Path contact = Paths.get("data","contacts.txt");
         List<String> PersonList;
         try{
@@ -95,12 +86,10 @@ public class contactsApplication {
 
         Path contact = Paths.get("data","contacts.txt");
         List<String> PersonList;
-//        List<String> toRemove = new ArrayList<>();
         try{
             PersonList = Files.readAllLines(contact);
             for(String person : PersonList){
                 if(person.toLowerCase().contains(input.toLowerCase())){
-//                    int index = PersonList.indexOf(person);
                     PersonList.remove(input);
                 }
             }
@@ -110,9 +99,8 @@ public class contactsApplication {
     }
 
     public static void doStuff() {
-
-        System.out.println("\nWelcome!\n");
-        System.out.println("Here are your menu options for your contacts: \n");
+        System.out.printf("%-12s %-32s %-12s\n", "************", "Contacts Application Home Screen", "************");
+        System.out.println("\nHere are your menu options: \n");
         System.out.println("1. View contacts." + "\n" + "2. Add a new contact." + "\n" + "3. Search a contact by name." + "\n" + "4. Delete an existing contact." + "\n" + "5. Exit.\n" + "\n" + "Enter an option (1, 2, 3, 4 or 5):");
         Scanner scanner = new Scanner(System.in);
         Integer option = Integer.valueOf(scanner.next());
@@ -127,7 +115,11 @@ public class contactsApplication {
             }
         } else if (option == 1) {
             System.out.println("\nYour Contacts:\n");
+            System.out.printf("%-8s | %-12s | \n", "Name", "Phone number");
+            System.out.printf("%-25s \n", "-------------------------");
             readWriteFile();
+            System.out.printf("%-25s \n", "-------------------------");
+//            readWriteFile();
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
             if (confirm) {
