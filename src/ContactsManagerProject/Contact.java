@@ -10,6 +10,7 @@ public class Contact {
         this.number = number;
     }
 
+    /* Getters */
     public String getName() {
         return this.name;
     }
@@ -18,6 +19,7 @@ public class Contact {
         return this.number;
     }
 
+    /* Setters */
     public void setName(String name) {
         this.name = name;
     }

@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.io.ObjectOutputStream;
-import java.io.FileOutputStream;
 
 public class contactsApplication {
 
-    static private List<Contact> contactsList = new ArrayList<>();
+    static private List<Contact> contactsList;
+    static private Scanner scanner = new Scanner(System.in);
     static Input userInput = new Input();
 
     public static void newFile() {
@@ -39,95 +38,75 @@ public class contactsApplication {
     }
 
     public static void writeFile(Contact person) {
-        contactsList.add(person);
+//        contactsList = new ArrayList<>();
+//        contactsList.add(person);
 //        for (Object contact : contactsList){
 //            System.out.println(contact);
 //        }
         try {
             Path contactsPATH = Paths.get("data", "contacts.txt");
-            Files.write(contactsPATH, Arrays.asList(convertString(contactsList)), StandardOpenOption.APPEND);
+            List<String> newPerson = Arrays.asList(person.getName() + " " + person.getNumber());
+            Files.write(contactsPATH, newPerson, StandardOpenOption.APPEND);
+//
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public static void readFile() {
-        try {
-            Path contactsFile = Paths.get("data", "contacts.txt");
-            List<String> contactLines = Files.readAllLines(contactsFile);
-            for (String line : contactLines) {
+    static void readWriteFile(){
+        List<String> contactsList = null;
+
+        try{
+            Path contact = Paths.get("data", "contacts.txt");
+
+            contactsList = Files.readAllLines(contact);
+            for(String line : contactsList){
                 System.out.println(line);
-                contactsList.add(new Contact())
             }
-        } catch (IOException ioe) {
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+
+        try{
+            Path contact = Paths.get("data", "contact.txt");
+            Files.write(contact, contactsList);
+        }catch(IOException ioe){
             ioe.printStackTrace();
         }
     }
 
-    public static void addContact() {
-        System.out.print("Input your new contact's information: ");
-        Scanner scanner = new Scanner(System.in);
-        String option = scanner.nextLine();
-        try {
-            Path contacts = Paths.get("data", "contacts.txt");
-            Files.writeString(contacts, option, StandardOpenOption.APPEND);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-    }
+    public static void searchString(String userInput){
 
-    public static void removeContact() {
-        System.out.println("\nHere is the current contacts list for your reference: \n");
-        readFile();
-        System.out.println("\nEnter the name of the contact you want to remove: \n");
-        Scanner scanner = new Scanner(System.in);
-        String option = scanner.nextLine();
-        contactsList.remove(option);
-    }
-
-    public static void search() {
-        List<String> filteredNames = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
-        String option;
-        System.out.println("\nEnter the name of the contact you want to search: \n");
-        option = scanner.nextLine();
-        for (int i = 0; i < contactsList.size(); i++) {
-            if (contactsList.get(i).getName().contains(option)) {
-                filteredNames.add(contactsList.get(i).getName());
+        Path contact = Paths.get("data","contacts.txt");
+        List<String> PersonList;
+        try{
+            PersonList = Files.readAllLines(contact);
+            for(String person : PersonList){
+                if(person.toLowerCase().contains(userInput.toLowerCase())){
+                    System.out.println("Contact: " + person + "\n");
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        System.out.println(filteredNames);
     }
 
-//    public Customer findUsingEnhancedForLoop(
-//            String name, List<Customer> customers) {
-//
-//        for (Customer customer : customers) {
-//            if (customer.getName().equals(name)) {
-//                return customer;
-//            }
-//        }
-//        return null;
-//    }
+    public static void deleteString(String input){
 
-//    public Object findUsingEnhancedForLoop (String name, List<Object> contactsList) {
-//
-//        for (Object person : contactsList) {
-//            if (person.getName().equals(name)) {
-//                return person;
-//            }
-//        }
-//        return null;
-//    }
-
-    public static String[] convertString(List<Contact> item){
-        String[] array = new String[item.size()];
-        int index = 0;
-        for (Contact value : item) {
-            array[index] = value.getName();
-            index++;
+        Path contact = Paths.get("data","contacts.txt");
+        List<String> PersonList;
+//        List<String> toRemove = new ArrayList<>();
+        try{
+            PersonList = Files.readAllLines(contact);
+            for(String person : PersonList){
+                if(person.toLowerCase().contains(input.toLowerCase())){
+//                    int index = PersonList.indexOf(person);
+                    PersonList.remove(input);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return array;
     }
 
     public static void doStuff() {
@@ -148,7 +127,7 @@ public class contactsApplication {
             }
         } else if (option == 1) {
             System.out.println("\nYour Contacts:\n");
-            readFile();
+            readWriteFile();
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
             if (confirm) {
@@ -157,7 +136,15 @@ public class contactsApplication {
                 System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 2) {
-            addContact();
+            System.out.println("Enter the name of your new contact: ");
+            Scanner scanner2 = new Scanner(System.in);
+            String userInputName = scanner2.nextLine();
+            System.out.println("Enter a number");
+            Scanner scanner3 = new Scanner(System.in);
+            String userInputNumber = scanner3.nextLine();
+            Contact person = new Contact(userInputName, userInputNumber);
+            writeFile(person);
+            System.out.println("\nYou've successfully added your new contact!\n");
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
             if (confirm) {
@@ -166,9 +153,23 @@ public class contactsApplication {
                 System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 3) {
-            search();
+            System.out.println("Enter a name to search:");
+            Scanner scanner4 = new Scanner(System.in);
+            String name = scanner4.nextLine();
+            searchString(name);
+            System.out.println("\nWould you like to select another option?\n");
+            boolean confirm = userInput.yesNo();
+            if (confirm) {
+                doStuff();
+            } else {
+                System.out.println("\nGoodbye, and have a wonderful day!");
+            }
         } else if (option == 4) {
-            removeContact();
+            System.out.println("Enter the name of the contact you want to delete: ");
+            Scanner scanner5 = new Scanner(System.in);
+            String name = scanner5.nextLine();
+            deleteString(name);
+            System.out.println("\nThe contact was successfully deleted!\n");
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
             if (confirm) {
@@ -181,31 +182,7 @@ public class contactsApplication {
         }
     }
 
-    //    static void readWriteFile(){
-//        List<String> contactsList = null;
-//
-//        try{
-//            Path contact = Paths.get("data", "contacts.txt");
-//            contactsList = Files.readAllLines(contact);
-//            for(String line : contactsList){
-//                System.out.println(line);
-//            }
-//        }catch(IOException ioe){
-//            ioe.printStackTrace();
-//        }
-//
-//        contactsList.add("kiwi"); contactsList.add("jackfruit");
-//
-//        try{
-//            Path contact = Paths.get("data", "contact.txt");
-//            Files.write(contact, contactsList);
-//        }catch(IOException ioe){
-//            ioe.printStackTrace();
-//        }
-//    }
-
     public static void main(String[] args) {
-//        System.out.println(contactsList);
         doStuff();
     }
 
