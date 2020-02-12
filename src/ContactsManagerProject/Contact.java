@@ -12,11 +12,11 @@ public class Contact {
 
     /* Getters */
     public String getName() {
-        return this.name;
+        return String.format("%-8s |", this.name + "");
     }
 
     public String getNumber() {
-        return this.number;
+        return String.format("%-12s |", this.number + "");
     }
 
     /* Setters */

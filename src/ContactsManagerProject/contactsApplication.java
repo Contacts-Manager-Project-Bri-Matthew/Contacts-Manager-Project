@@ -118,7 +118,7 @@ public class contactsApplication {
             System.out.printf("%-8s | %-12s | \n", "Name", "Phone number");
             System.out.printf("%-25s \n", "-------------------------");
             readWriteFile();
-            System.out.printf("%-25s \n", "-------------------------");
+            System.out.printf("%-25s", "-------------------------");
 //            readWriteFile();
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
