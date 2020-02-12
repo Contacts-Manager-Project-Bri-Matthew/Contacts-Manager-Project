@@ -10,12 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.io.ObjectOutputStream;
-import java.io.FileOutputStream;
 
 public class contactsApplication {
 
-    static private List<Object> contactsList;
+    static private List<Contact> contactsList;
+    static private Scanner scanner = new Scanner(System.in);
     static Input userInput = new Input();
 
     public static void newFile() {
@@ -38,73 +37,77 @@ public class contactsApplication {
         }
     }
 
-    public static void writeFile(Object person) {
-        contactsList = new ArrayList<>();
-        contactsList.add(person);
+    public static void writeFile(Contact person) {
+//        contactsList = new ArrayList<>();
+//        contactsList.add(person);
 //        for (Object contact : contactsList){
 //            System.out.println(contact);
 //        }
         try {
             Path contactsPATH = Paths.get("data", "contacts.txt");
-            Files.write(contactsPATH, Arrays.asList(convertString(contactsList)), StandardOpenOption.APPEND);
+            List<String> newPerson = Arrays.asList(person.getName() + " " + person.getNumber());
+            Files.write(contactsPATH, newPerson, StandardOpenOption.APPEND);
+//
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
-    public static void readFile() {
-        try {
-            Path contactsFile = Paths.get("data", "contacts.txt");
-            List<String> contactLines = Files.readAllLines(contactsFile);
-            for (String line : contactLines) {
+    static void readWriteFile(){
+        List<String> contactsList = null;
+
+        try{
+            Path contact = Paths.get("data", "contacts.txt");
+
+            contactsList = Files.readAllLines(contact);
+            for(String line : contactsList){
                 System.out.println(line);
             }
-        } catch (IOException ioe) {
+        }catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+
+        try{
+            Path contact = Paths.get("data", "contact.txt");
+            Files.write(contact, contactsList);
+        }catch(IOException ioe){
             ioe.printStackTrace();
         }
     }
 
-    public static void addContact() {
+    public static void searchString(String userInput){
 
-        List<String> contact = new ArrayList<>();
-
-        System.out.print("Input your new contact's information: ");
-        Scanner scanner = new Scanner(System.in);
-        String option = scanner.nextLine();
-        contact.add(option);
-        try {
-            Path contacts = Paths.get("data", "contacts.txt");
-            Files.write(contacts, contact, StandardOpenOption.APPEND);
-
-//            Path contactsPATH = Paths.get("data", "contacts.txt");
-//            Files.write(contactsPATH, Arrays.asList(convertString(contactsList)), StandardOpenOption.APPEND);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        Path contact = Paths.get("data","contacts.txt");
+        List<String> PersonList;
+        try{
+            PersonList = Files.readAllLines(contact);
+            for(String person : PersonList){
+                if(person.toLowerCase().contains(userInput.toLowerCase())){
+                    System.out.println("Contact: " + person + "\n");
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public static void removeContact() {
+    public static void deleteString(String input){
 
-    }
-
-    public static String[] convertString(List<Object> item){
-        String[] array = new String[item.size()];
-        int index = 0;
-        for (Object value : item) {
-            array[index] = (String) value;
-            index++;
+        Path contact = Paths.get("data","contacts.txt");
+        List<String> PersonList;
+//        List<String> toRemove = new ArrayList<>();
+        try{
+            PersonList = Files.readAllLines(contact);
+            for(String person : PersonList){
+                if(person.toLowerCase().contains(input.toLowerCase())){
+//                    int index = PersonList.indexOf(person);
+                    PersonList.remove(input);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return array;
     }
-
-//    public static void menu() {
-//        System.out.println("1. View contacts.");
-//        System.out.println("2. Add a new contact.");
-//        System.out.println("3. Search a contact by name.");
-//        System.out.println("4. Delete an existing contact.");
-//        System.out.println("5. Exit.");
-//        System.out.println("Enter an option (1, 2, 3, 4 or 5):");
-//    }
 
     public static void doStuff() {
 
@@ -120,55 +123,67 @@ public class contactsApplication {
             if (confirm) {
                 doStuff();
             } else {
-                System.out.println("Goodbye, and have a wonderful day!");
+                System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 1) {
-            readFile();
+            System.out.println("\nYour Contacts:\n");
+            readWriteFile();
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
             if (confirm) {
                 doStuff();
             } else {
-                System.out.println("Goodbye, and have a wonderful day!");
+                System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 2) {
-            addContact();
+            System.out.println("Enter the name of your new contact: ");
+            Scanner scanner2 = new Scanner(System.in);
+            String userInputName = scanner2.nextLine();
+            System.out.println("Enter a number");
+            Scanner scanner3 = new Scanner(System.in);
+            String userInputNumber = scanner3.nextLine();
+            Contact person = new Contact(userInputName, userInputNumber);
+            writeFile(person);
+            System.out.println("\nYou've successfully added your new contact!\n");
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
             if (confirm) {
                 doStuff();
             } else {
-                System.out.println("Goodbye, and have a wonderful day!");
+                System.out.println("\nGoodbye, and have a wonderful day!");
+            }
+        } else if (option == 3) {
+            System.out.println("Enter a name to search:");
+            Scanner scanner4 = new Scanner(System.in);
+            String name = scanner4.nextLine();
+            searchString(name);
+            System.out.println("\nWould you like to select another option?\n");
+            boolean confirm = userInput.yesNo();
+            if (confirm) {
+                doStuff();
+            } else {
+                System.out.println("\nGoodbye, and have a wonderful day!");
+            }
+        } else if (option == 4) {
+            System.out.println("Enter the name of the contact you want to delete: ");
+            Scanner scanner5 = new Scanner(System.in);
+            String name = scanner5.nextLine();
+            deleteString(name);
+            System.out.println("\nThe contact was successfully deleted!\n");
+            System.out.println("\nWould you like to select another option?\n");
+            boolean confirm = userInput.yesNo();
+            if (confirm) {
+                doStuff();
+            } else {
+                System.out.println("\nGoodbye, and have a wonderful day!");
             }
         } else if (option == 5) {
-            System.out.println("Goodbye, and have a wonderful day!");
+            System.out.println("\nGoodbye, and have a wonderful day!");
         }
     }
-
-    //    static void readWriteFile(){
-//        List<String> contactsList = null;
-//
-//        try{
-//            Path contact = Paths.get("data", "contacts.txt");
-//            contactsList = Files.readAllLines(contact);
-//            for(String line : contactsList){
-//                System.out.println(line);
-//            }
-//        }catch(IOException ioe){
-//            ioe.printStackTrace();
-//        }
-//
-//        contactsList.add("kiwi"); contactsList.add("jackfruit");
-//
-//        try{
-//            Path contact = Paths.get("data", "contact.txt");
-//            Files.write(contact, contactsList);
-//        }catch(IOException ioe){
-//            ioe.printStackTrace();
-//        }
-//    }
 
     public static void main(String[] args) {
         doStuff();
     }
+
 }
