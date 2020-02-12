@@ -82,17 +82,22 @@ public class contactsApplication {
         }
     }
 
-    public static void deleteString(String input){
-
+    public static void deleteContact(String input){
         Path contact = Paths.get("data","contacts.txt");
         List<String> PersonList;
         try{
             PersonList = Files.readAllLines(contact);
+            List<String> newList = new ArrayList<>();
             for(String person : PersonList){
                 if(person.toLowerCase().contains(input.toLowerCase())){
-                    PersonList.remove(input);
+                    continue;
                 }
+                newList.add(person);
             }
+//            for (String name : newList){
+//                System.out.println(name);
+//            }
+            Files.write(Paths.get("data","contacts.txt"), newList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -160,7 +165,7 @@ public class contactsApplication {
             System.out.println("Enter the name of the contact you want to delete: ");
             Scanner scanner5 = new Scanner(System.in);
             String name = scanner5.nextLine();
-            deleteString(name);
+            deleteContact(name);
             System.out.println("\nThe contact was successfully deleted!\n");
             System.out.println("\nWould you like to select another option?\n");
             boolean confirm = userInput.yesNo();
